@@ -37,14 +37,26 @@ for data, prediction in zip(dataset, label_prediction):
         pred_labels.append(LABELS[pred_label])
         true_labels.append(LABELS[true_label])
 
-print(f'Accuracy           {round(sum([pred_labels[i] == true_labels[i] for i in range(len(pred_labels))]) / len(pred_labels), 4)}')
-print(f'Macro F1:          {f1_score(true_labels, pred_labels, average="macro").round(4)}')
-print(f'Macro F1 w/o NEI:  {f1_score(true_labels, pred_labels, average="macro", labels=[0, 2]).round(4)}')
+accuracy = round(sum([pred_labels[i] == true_labels[i] for i in range(len(pred_labels))]) / len(pred_labels), 4)
+macro_f1 = round(f1_score(true_labels, pred_labels, average="macro"), 4)
+macro_f1_wo_nei = round(f1_score(true_labels, pred_labels, average="macro", labels=[0, 2]), 4)
+
+print(f'Accuracy           {accuracy}')
+print(f'Macro F1:          {macro_f1}')
+print(f'Macro F1 w/o NEI:  {macro_f1_wo_nei}')
 print()
-print('                   [C      N      S     ]')
-print(f'F1:                {f1_score(true_labels, pred_labels, average=None).round(4)}')
-print(f'Precision:         {precision_score(true_labels, pred_labels, average=None).round(4)}')
-print(f'Recall:            {recall_score(true_labels, pred_labels, average=None).round(4)}')
+
+# F1, Precision, and Recall for each class
+f1_scores = f1_score(true_labels, pred_labels, average=None)
+precision_scores = precision_score(true_labels, pred_labels, average=None)
+recall_scores = recall_score(true_labels, pred_labels, average=None)
+
+print(f'F1:                {", ".join([str(round(x, 4)) for x in f1_scores])}')
+print(f'Precision:         {", ".join([str(round(x, 4)) for x in precision_scores])}')
+print(f'Recall:            {", ".join([str(round(x, 4)) for x in recall_scores])}')
 print()
+
+# Confusion Matrix
+conf_matrix = confusion_matrix(true_labels, pred_labels)
 print('Confusion Matrix:')
-print(confusion_matrix(true_labels, pred_labels))
+print(conf_matrix)
